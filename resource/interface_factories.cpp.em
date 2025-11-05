@@ -431,7 +431,27 @@ void ActionFactory_@(frm_)_@(to_)<
 @[        if field["ros2"]["type"].startswith("builtin_interfaces") ]@
     ros1_bridge::convert_@(frm)_to_@(to)(@(field["ros" + frm]["name"])@(frm), @(field["ros" + to]["name"])@(to));
 @[        else]@
+    // handle primitive types and fixed-size array differences (boost::array vs std::array)
+    @{
+    # detect fixed-size array type mismatch between boost and std
+    if "boost::array" in field["ros1"]["cpptype"] and "std::array" in field["ros2"]["cpptype"]:
+    }@
+    std::copy(
+      @(field["ros" + frm]["name"])@(frm).begin(),
+      @(field["ros" + frm]["name"])@(frm).end(),
+      @(field["ros" + to]["name"])@(to).begin());
+    @{
+    elif "std::array" in field["ros1"]["cpptype"] and "boost::array" in field["ros2"]["cpptype"]:
+    }@
+    std::copy(
+      @(field["ros" + frm]["name"])@(frm).begin(),
+      @(field["ros" + frm]["name"])@(frm).end(),
+      @(field["ros" + to]["name"])@(to).begin());
+    @{
+    else:
+    }@
     @(field["ros" + to]["name"])@(to) = @(field["ros" + frm]["name"])@(frm);
+    @}
 @[        end if]@
 @[      else]@
     Factory<@(field["ros1"]["cpptype"]),@(field["ros2"]["cpptype"])>::convert_@(frm)_to_@(to)(@(field["ros" + frm]["name"])@(frm), @(field["ros" + to]["name"])@(to));
