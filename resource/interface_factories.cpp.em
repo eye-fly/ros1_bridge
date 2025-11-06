@@ -411,7 +411,7 @@ void ActionFactory_@(frm_)_@(to_)<
   @(const_1)ROS@(to)@(type) &@(type.lower())@(to),
   @(const_2)ROS@(frm)@(type) &@(type.lower())@(frm))
 @[      end if]@
-{
+{ 
 @[      for field in action["fields"][type.lower()]]@
 @[        if field["array"] or ("[" in field["ros1"]["cpptype"] and "[" in field["ros2"]["cpptype"]) ]@
   @[ if field["array"] ]@
@@ -454,7 +454,7 @@ void ActionFactory_@(frm_)_@(to_)<
 @[      else]@
     Factory<@(field["ros1"]["cpptype"]),@(field["ros2"]["cpptype"])>::convert_@(frm)_to_@(to)(@(field["ros" + frm]["name"])@(frm), @(field["ros" + to]["name"])@(to));
 @[end if]@
-@[        if field["array"]]@
+@[       if field["array"] or ("[" in field["ros1"]["cpptype"] and "[" in field["ros2"]["cpptype"]) ]@
   }
 @[        end if]@
 
