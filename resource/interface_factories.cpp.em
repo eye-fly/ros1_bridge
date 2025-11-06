@@ -413,7 +413,7 @@ void ActionFactory_@(frm_)_@(to_)<
 @[      end if]@
 {
 @[      for field in action["fields"][type.lower()]]@
-@[        if field["array"]]@
+@[        if field["array"] or ("[" in field["ros1"]["cpptype"] and "[" in field["ros2"]["cpptype"]) ]@
   @(type.lower())@(to).@(field["ros" + to]["name"]).resize(@(type.lower())@(frm).@(field["ros" + frm]["name"]).size());
   auto @(field["ros" + frm]["name"])@(frm)_it = @(type.lower())@(frm).@(field["ros" + frm]["name"]).begin();
   auto @(field["ros" + to]["name"])@(to)_it = @(type.lower())@(to).@(field["ros" + to]["name"]).begin();
@@ -432,18 +432,18 @@ void ActionFactory_@(frm_)_@(to_)<
     ros1_bridge::convert_@(frm)_to_@(to)(@(field["ros" + frm]["name"])@(frm), @(field["ros" + to]["name"])@(to));
 @[        else]@
     // Temporary debug - remove after fixing
-    std::cerr << "Field: @(field['ros1']['name']) ROS1: @(field['ros1']['cpptype']) ROS2: @(field['ros2']['cpptype'])" << std::endl;
+    // std::cerr << "Field: @(field['ros1']['name']) ROS1: @(field['ros1']['cpptype']) ROS2: @(field['ros2']['cpptype'])" << std::endl;
 @[          if "boost::array" in field["ros1"]["cpptype"] and "std::array" in field["ros2"]["cpptype"] ]@
-    std::cerr << "  Using boost->std array copy" << std::endl;
+    // std::cerr << "  Using boost->std array copy" << std::endl;
     std::copy(@(field["ros" + frm]["name"])@(frm).begin(),@(field["ros" + frm]["name"])@(frm).end(),@(field["ros" + to]["name"])@(to).begin());
 @[          elif "std::array" in field["ros1"]["cpptype"] and "boost::array" in field["ros2"]["cpptype"] ]@
-    std::cerr << "  Using std->boost array copy" << std::endl;
+    // std::cerr << "  Using std->boost array copy" << std::endl;
     std::copy(@(field["ros" + frm]["name"])@(frm).begin(),@(field["ros" + frm]["name"])@(frm).end(),@(field["ros" + to]["name"])@(to).begin());
 @[          elif field["basic"]]@
-    std::cerr << "  Using direct assignment" << std::endl;
+    // std::cerr << "  Using direct assignment" << std::endl;
     @(field["ros" + to]["name"])@(to) = @(field["ros" + frm]["name"])@(frm);
 @[          else]@
-    std::cerr << "  Using factory conversion" << std::endl;
+    // std::cerr << "  Using factory conversion" << std::endl;
     Factory<@(field["ros1"]["cpptype"]),@(field["ros2"]["cpptype"])>::convert_@(frm)_to_@(to)(@(field["ros" + frm]["name"])@(frm), @(field["ros" + to]["name"])@(to));
 @[          end if]@
 @[        end if]@
