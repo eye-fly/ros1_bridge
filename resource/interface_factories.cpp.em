@@ -414,7 +414,10 @@ void ActionFactory_@(frm_)_@(to_)<
 {
 @[      for field in action["fields"][type.lower()]]@
 @[        if field["array"] or ("[" in field["ros1"]["cpptype"] and "[" in field["ros2"]["cpptype"]) ]@
-  @(type.lower())@(to).@(field["ros" + to]["name"]).resize(@(type.lower())@(frm).@(field["ros" + frm]["name"]).size());
+  @[ if field["array"] ]@
+    // Only Dynamic array - resize needed
+    @(type.lower())@(to).@(field["ros" + to]["name"]).resize(@(type.lower())@(frm).@(field["ros" + frm]["name"]).size());
+  @[ end if ]@
   auto @(field["ros" + frm]["name"])@(frm)_it = @(type.lower())@(frm).@(field["ros" + frm]["name"]).begin();
   auto @(field["ros" + to]["name"])@(to)_it = @(type.lower())@(to).@(field["ros" + to]["name"]).begin();
   while (
